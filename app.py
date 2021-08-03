@@ -1,6 +1,7 @@
 from flask import Flask, request
-from flask_restful import Resource, Api
+from flask_restful import Resource, Api, marshal_with, fields
 from models.product import Product
+from datetime import datetime
 
 app = Flask(__name__)
 api = Api(app)
@@ -11,12 +12,14 @@ products = []
 class ProductResource(Resource):
     def post(self):
         data = request.form
+
+        start_date = datetime.strptime(data["start_date"], "%Y-%m-%d")
         prod = Product(
             customer_id=data["customer_id"],
             product_name=data["product_name"],
             domain=data["domain"],
-            start_date=data["start_date"],
-            duration_months=data["duration_months"],
+            start_date=start_date,
+            duration_months=int(data["duration_months"]),
         )
         products.append(prod)
         return "", 201
