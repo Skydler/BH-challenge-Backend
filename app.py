@@ -1,17 +1,19 @@
 from flask import Flask, request
 from flask_restful import Resource, Api, marshal_with, fields
+from flask_cors import CORS
 from models.product import Product
 from datetime import datetime
 
 app = Flask(__name__)
 api = Api(app)
+CORS(app)
 
 products = []
 
 
 class ProductResource(Resource):
     def post(self):
-        data = request.form
+        data = request.json
 
         start_date = datetime.strptime(data["start_date"], "%Y-%m-%d")
         prod = Product(
@@ -25,7 +27,7 @@ class ProductResource(Resource):
         return "", 201
 
     def delete(self):
-        data = request.form
+        data = request.json
         product = [
             prod
             for prod in products
