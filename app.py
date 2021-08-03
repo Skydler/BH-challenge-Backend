@@ -6,7 +6,6 @@ app = Flask(__name__)
 api = Api(app)
 
 products = []
-scheduled_emails = []
 
 
 class ProductResource(Resource):
@@ -20,7 +19,6 @@ class ProductResource(Resource):
             duration_months=data["duration_months"],
         )
         products.append(prod)
-        self._schedule_emails(prod)
         return "", 201
 
     def delete(self):
@@ -32,16 +30,19 @@ class ProductResource(Resource):
             and prod.product_name == data["product_name"]
             and prod.domain == data["domain"]
         ]
-        products.remove(product[0])
-        return "", 204
-
-    def _schedule_emails(product):
-        pass
+        if product:
+            products.remove(product[0])
+            return "", 204
+        else:
+            return "Product not found", 404
 
 
 class Email(Resource):
     def get(self):
-        return scheduled_emails
+        emails = []
+        for prod in products:
+            emails += prod.scheduled_emails
+        return emails
 
 
 api.add_resource(ProductResource, "/product")
