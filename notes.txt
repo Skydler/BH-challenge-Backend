@@ -1,0 +1,6 @@
+Asumptions:
+- Months have 30 days
+- A product is only added once (uniqueness)
+
+Comments:
+- The schedule of emails on product creation could be implemented in a polymorphic manner
